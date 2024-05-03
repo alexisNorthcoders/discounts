@@ -12,9 +12,11 @@
       "isSubscribed": false,
       "avatarURL": "assets/avatar2.jpeg"
     },
-    "undefined": {
-      "username": "Alice",
-      "isSubscribed": false
+    "1714761145552": {
+      "id": "1714761145552",
+      "username": "Tony",
+      "isSubscribed": false,
+      "avatarURL": ""
     }
   }
 }

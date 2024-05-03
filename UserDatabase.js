@@ -40,12 +40,11 @@ class UserDatabase {
     return false;
   }
   async addUser(newUser) {
-   
-    const randomId = Date.now().toString()
-    newUser.id = randomId;
-    this.users[randomId] = newUser;
+    const { username, avatarURL, isSubscribed } = newUser;
+    const user = new User(username, isSubscribed, avatarURL);
+    this.users[user.id] = user.info;
     await this.saveUsers();
-}
+  }
   async getUserById(id) {
     if (this.users.hasOwnProperty(id)) {
       return this.users[id];
@@ -62,11 +61,18 @@ class UserDatabase {
   }
 }
 class User {
-  constructor(id, username, isSubscribed = false, avatarURL = "") {
-    this.id = id;
+  constructor(username, isSubscribed = false, avatarURL = "") {
+    const randomId = Date.now().toString();
+    this.id = randomId;
     this.username = username;
     this.isSubscribed = isSubscribed;
     this.avatarURL = avatarURL;
+    this.info = {
+      id: this.id,
+      username: this.username,
+      isSubscribed: this.isSubscribed,
+      avatarURL: this.avatarURL,
+    };
   }
 }
 module.exports = UserDatabase;
