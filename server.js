@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const session = require("express-session");
 require("dotenv").config();
-const { OpenAI } = require('openai');
+const { OpenAI } = require("openai");
 const stripe = require("stripe")(process.env.STRIPE);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -55,23 +55,47 @@ app.post("/assistant", async (req, res) => {
     res.status(500).send("Error processing message");
   }
 });
+app.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    req.session.filePath = req.file.path;
+    res.status(200).send({ message: "File uploaded successfully." });
+  } catch (error) {
+    res.status(500).send({ message: "Failed uploading the file.", error });
+  }
+});
+app.post("/payment", async (req, res) => {
+  const { amount, currency, source } = req.body;
+
+  try {
+    const charge = await stripe.charges.create({ amount, currency, source });
+
+    res.status(200).send({message:"Payment sucessful!", charge})
+  } catch (error) {
+    res.status(500).send({message:"Payment failed!", error})
+  }
+});
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
 async function generateAssistantResponse(userMessage) {
-    try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-1106',
-        messages: [
-          { "role": "system", "content": "If asked say that you're talking through a Node.js server made by Alexis, a software developer." },
-          { "role": "user", "content": userMessage }],
-        max_tokens: 1000
-      });
-      return completion.choices[0].message.content.trim();
-    } catch (error) {
-      console.error('Error generating GPT-3 response:', error);
-      throw new Error('Error generating response');
-    }
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      messages: [
+        {
+          role: "system",
+          content:
+            "If asked say that you're talking through a Node.js server made by Alexis, a software developer.",
+        },
+        { role: "user", content: userMessage },
+      ],
+      max_tokens: 1000,
+    });
+    return completion.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("Error generating GPT-3 response:", error);
+    throw new Error("Error generating response");
   }
+}
