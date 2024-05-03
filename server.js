@@ -63,11 +63,12 @@ app.get("/", (req, res) => {
 
 app.post("/assistant", async (req, res) => {
   const userMessage = req.body.userPrompt;
+  console.log(req.body)
 
   try {
     const response = await generateAssistantResponse(userMessage);
-
-    res.send(response);
+    console.log(response)
+    res.send({message:response});
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing message");

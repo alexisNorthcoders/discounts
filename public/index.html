@@ -9,7 +9,7 @@
     class="flex flex-col gap-1 justify-center items-center bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300"
   >
     <h1 class="font-bold text-xl mt-2">Discounts Assistant</h1>
-    <div class="h-[50vh] w-[80vw] bg-white rounded-xl shadow-xl">
+    <div class="h-[50vh] w-[80vw] bg-white rounded-xl shadow-xl" id="chat-box">
       <div class="flex mt-1 pl-1 bg-white">
         <image
           src="assets/assistant.png"
@@ -18,52 +18,83 @@
           height="40"
           class="h-10 w-10 rounded-full object-cover"
         />
-        <span class="text-blue-500 font-bold">Assistant: </span><div id="assistant-message">Hello User! I'm
-        a discount assistant. How can I help you today?</div>
-      </div>
-      <div class="flex mt-1 pl-1 bg-gray-200"> <image
-        src="assets/avatar.jpeg"
-        alt="assistant avatar image"
-        width="40"
-        height="40"
-        class="h-10 w-10 rounded-full object-cover"
-      />
-        <span class="text-cyan-500 font-bold">User: </span><div id="user-message">I need discount for
-        KFC!</div> 
+        <span class="text-blue-500 font-bold">Assistant: </span>
+        <div id="assistant-message">
+          Hello! I'm your assistant. How can I help you?
+        </div>
       </div>
     </div>
     <form id="message-form" class="w-[80vw]">
-      <div class="w-full flex flex-row gap-1"><input class=" w-full bg-white rounded-xl shadow-xl" type="text" />
-      <button
-        class="bg-green-400 p-1 rounded-xl hover:bg-green-500 active:bg-green-700 shadow-sm"
-        type="submit"
-      >
-        Send
-      </button></div>
+      <div class="w-full flex flex-row gap-1">
+        <input
+          id="message-input"
+          class="w-full bg-white rounded-xl shadow-xl"
+          type="text"
+          value=""
+          placeholder="Enter message..."
+        />
+        <button
+          class="bg-green-400 p-1 rounded-xl hover:bg-green-500 active:bg-green-700 shadow-sm"
+          type="submit"
+        >
+          Send
+        </button>
+      </div>
     </form>
 
     <div class="step-section mb-8">
-        <h2 class="step-title text-xl font-semibold mb-4">Payment</h2>
-        <form id="payment-form">
-            <div class="mb-4">
-                <label for="card-element" class="block text-sm font-medium text-gray-700">Card</label>
-                <div id="card-element" class="border border-gray-300 p-2 rounded"></div>
-            </div>
-            <h2 id="price" class="text-lg font-medium text-gray-700"></h2>
-            <button id="submit-payment" class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Subscribe Now</button>
-        </form>
-       
-    </div>
-    <form id="file-upload-form" class="w-auto mt-4 " enctype="multipart/form-data">
-        <div class="flex flex-col">
-            <label for="file-input" class="font-bold text-lg text-gray-800 mb-2">Upload File:</label>
-            <input id="file-input" type="file" name="file" accept=".json" class="py-2 px-4 border border-gray-300 rounded-lg" />
+      <h2 class="step-title text-xl font-semibold mb-4">Payment</h2>
+      <form id="payment-form">
+        <div class="mb-4">
+          <label
+            for="card-element"
+            class="block text-sm font-medium text-gray-700"
+            >Card</label
+          >
+          <div
+            id="card-element"
+            class="border border-gray-300 p-2 rounded"
+          ></div>
         </div>
-        <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Upload</button>
-        <div id="upload-message" class="mt-2 text-green-600 font-bold hidden">File uploaded successfully!</div>
+        <h2 id="price" class="text-lg font-medium text-gray-700"></h2>
+        <button
+          id="submit-payment"
+          class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Subscribe Now
+        </button>
+      </form>
+    </div>
+    <form
+      id="file-upload-form"
+      class="w-auto mt-4"
+      enctype="multipart/form-data"
+    >
+      <div class="flex flex-col">
+        <label for="file-input" class="font-bold text-lg text-gray-800 mb-2"
+          >Upload File:</label
+        >
+        <input
+          id="file-input"
+          type="file"
+          name="file"
+          accept=".json"
+          class="py-2 px-4 border border-gray-300 rounded-lg"
+        />
+      </div>
+      <button
+        type="submit"
+        class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Upload
+      </button>
+      <div id="upload-message" class="mt-2 text-green-600 font-bold hidden">
+        File uploaded successfully!
+      </div>
     </form>
   </body>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="app.js"></script>
+  <script src="chat.js"></script>
 </html>
