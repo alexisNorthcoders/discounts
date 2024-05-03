@@ -50,6 +50,7 @@ function sendPrompt(event) {
   document.getElementById("message-input").value=""
   
   chatBox.innerHTML += createUserMessage(userPrompt);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
   fetch("http://127.0.0.1:8888/assistant", {
     method: "POST",
@@ -67,6 +68,7 @@ function sendPrompt(event) {
     .then((data) => {
       
       chatBox.innerHTML += createAssistantMessage(data.message)
+      chatBox.scrollTop = chatBox.scrollHeight;
     })
     .catch((error) => {
       console.error("There was a problem sending the message.", error);
