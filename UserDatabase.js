@@ -44,6 +44,7 @@ class UserDatabase {
     const user = new User(username, isSubscribed, avatarURL);
     this.users[user.id] = user.info;
     await this.saveUsers();
+    return {user:user.info}
   }
   async getUserById(id) {
     if (this.users.hasOwnProperty(id)) {

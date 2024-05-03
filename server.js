@@ -65,11 +65,13 @@ app.get("/users", async (req, res) => {
 });
 app.post("/users", async (req, res) => {
   const newUser = req.body;
-  console.log(newUser);
-
+  
   const addUser = await usersDB.addUser(newUser);
   if (addUser) {
-    res.send({ message: "User added successfully!" });
+    res.send({ message: "User added successfully!",user:addUser.user});
+  }
+  else{
+    res.status(400).send({message:"Bad request!"})
   }
 });
 app.get("/users/:id", async (req, res) => {
