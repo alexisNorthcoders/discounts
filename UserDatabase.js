@@ -9,7 +9,7 @@ class UserDatabase {
   async loadUsers() {
     try {
       const userData = await fs.readFile(this.usersFilePath, "utf8");
-      this.users = JSON.parse(userData);
+      this.users = JSON.parse(userData).users;
     } catch (error) {
       console.error("Error reading users data:", error);
     }
@@ -19,7 +19,7 @@ class UserDatabase {
     try {
       await fs.writeFile(
         this.usersFilePath,
-        JSON.stringify(this.users, null, 2)
+        JSON.stringify({ users: this.users }, null, 2)
       );
       console.log("Users data saved successfully");
     } catch (error) {
@@ -31,28 +31,42 @@ class UserDatabase {
     return this.users;
   }
 
-  async updateUserById(id, newData) {
-    const index = this.users.findIndex((user) => user.id === id);
-    if (index !== -1) {
-      this.users[index] = { ...this.users[index], ...newData };
+  async updateUserById(id, updatedData) {
+    if (this.users.hasOwnProperty(id)) {
+      this.users[id] = { ...this.users[id], ...updatedData };
       await this.saveUsers();
       return true;
     }
     return false;
   }
   async addUser(newUser) {
-    this.users.push(newUser);
+   
+    const randomId = Date.now().toString()
+    newUser.id = randomId;
+    this.users[randomId] = newUser;
     await this.saveUsers();
+}
+  async getUserById(id) {
+    if (this.users.hasOwnProperty(id)) {
+      return this.users[id];
+    }
+    return null;
   }
   async deleteUserById(id) {
-    const index = this.users.findIndex((user) => user.id === id);
-    if (index !== -1) {
-      this.users.splice(index, 1);
+    if (this.users.hasOwnProperty(id)) {
+      delete this.users[id];
       await this.saveUsers();
-      return true; 
+      return true;
     }
     return false;
   }
 }
-
+class User {
+  constructor(id, username, isSubscribed = false, avatarURL = "") {
+    this.id = id;
+    this.username = username;
+    this.isSubscribed = isSubscribed;
+    this.avatarURL = avatarURL;
+  }
+}
 module.exports = UserDatabase;

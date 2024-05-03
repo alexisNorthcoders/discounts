@@ -9,7 +9,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const cors = require("cors");
 const UserDatabase = require("./UserDatabase.js");
 const usersDB = new UserDatabase("./data/users.json");
-const discounts = require("./data/discounts.json")
+const discounts = require("./data/discounts.json");
 const path = require("path");
 
 const app = express();
@@ -59,12 +59,36 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
-app.get("/users", (req, res) => {
-  const usersData = usersDB.getUsers();
+app.get("/users", async (req, res) => {
+  const usersData = await usersDB.getUsers();
   res.json(usersData);
 });
+app.post("/users", async (req, res) => {
+  const newUser = req.body;
+  console.log(newUser);
+
+  const addUser = await usersDB.addUser(newUser);
+  if (addUser) {
+    res.send({ message: "User added successfully!" });
+  }
+});
+app.get("/users/:id", async (req, res) => {
+  const id = req.params.id;
+  const usersData = await usersDB.getUserById(id);
+  res.json(usersData);
+});
+app.delete("/users", async (req, res) => {
+  const id = req.body.id;
+  console.log(id);
+  const deleteUser = await usersDB.deleteUserById(id);
+  if (deleteUser) {
+    res.send({ message: "User deleted!" });
+  }
+  else {
+    res.status(400).send({message:"Bad request!"})
+  }
+});
 app.get("/discounts", (req, res) => {
-  
   res.json(discounts);
 });
 app.post("/assistant", async (req, res) => {
@@ -80,7 +104,6 @@ app.post("/assistant", async (req, res) => {
     res.status(500).send("Error processing message");
   }
 });
-
 app.post("/payment", async (req, res) => {
   const { amount, currency, source } = req.body;
   console.log(req.body);
@@ -93,11 +116,9 @@ app.post("/payment", async (req, res) => {
     res.status(500).send({ message: "Payment failed!", error });
   }
 });
-
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
-
 async function generateAssistantResponse(userMessage) {
   try {
     const completion = await openai.chat.completions.create({

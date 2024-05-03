@@ -1,15 +1,20 @@
 {
   "users": {
     "1": {
+      "id": "1",
       "username": "Jony",
       "isSubscribed": true,
-      "avatarURL":"assets/avatar1.jpeg"
-      
+      "avatarURL": "assets/avatar1.jpeg"
     },
     "2": {
-        "username": "Grace",
-        "isSubscribed": true,
-        "avatarURL":"assets/avatar2.jpeg"
-      }
+      "id": "2",
+      "username": "Grace",
+      "isSubscribed": false,
+      "avatarURL": "assets/avatar2.jpeg"
+    },
+    "undefined": {
+      "username": "Alice",
+      "isSubscribed": false
+    }
   }
 }
