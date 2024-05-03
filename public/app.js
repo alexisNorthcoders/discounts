@@ -74,3 +74,40 @@ function sendPrompt(event) {
       console.error("There was a problem sending the message.", error);
     });
 }
+
+const stripe = Stripe("pk_test_51OkRuMIEw4TLc4pSBaJKzQx2JlNMxJxVs4orWx4CUWwNwf4WkNpXCS6Z0PydUSWdK32vuYBPNphYrDrBAbYh4tim00TQesbcaB")
+const elements = stripe.elements()
+const card = elements.create("card")
+card.mount("#card-element")
+
+const paymentForm = document.getElementById("payment-form")
+paymentForm.addEventListener("submit", async (e)=>{
+    e.preventDefault()
+    const {token,error}=await stripe.createToken(card)
+
+    if(error){
+        console.log("Stripe error!", error)
+        return
+    }
+    const response = await fetch("http://127.0.0.1:8888/payment", {
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            amount: document.getElementById("price").dataset.cents,
+            currency:"gbp",
+            source:token.id
+        })
+    })
+    const data = await response.json()
+
+    if (data.error){
+        console.log("Payment error!", data.error)
+    }
+    else{
+        console.log("Payment successful!", data.charge)
+        chatBox.innerHTML += createAssistantMessage("Thanks for subscribing!")
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+})

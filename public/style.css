@@ -1,0 +1,11 @@
+.StripeElement{
+    color:black;
+}
+#card-element{
+    background-color: aqua;
+    font-size: 30px;
+}
+.card-element{
+    background-color: aqua;
+    font-size: 30px;
+}

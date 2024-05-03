@@ -77,6 +77,7 @@ app.post("/assistant", async (req, res) => {
 
 app.post("/payment", async (req, res) => {
   const { amount, currency, source } = req.body;
+  console.log(req.body)
 
   try {
     const charge = await stripe.charges.create({ amount, currency, source });
