@@ -6,12 +6,14 @@ require("dotenv").config();
 const { OpenAI } = require("openai");
 const stripe = require("stripe")(process.env.STRIPE);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const cors = require('cors')
+
 
 const path = require("path");
 
 const app = express();
+app.use(cors())
 const port = process.env.PORT;
-const axios = require("axios");
 
 const fs = require("fs");
 
@@ -22,7 +24,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     const basename = path.basename(file.originalname, ext);
-    cb(null, `${Date.now()}-${basename}$ext`);
+    cb(null, `${Date.now()}-${basename}${ext}`);
   },
 });
 const upload = multer({ storage });
@@ -69,9 +71,9 @@ app.post("/payment", async (req, res) => {
   try {
     const charge = await stripe.charges.create({ amount, currency, source });
 
-    res.status(200).send({message:"Payment sucessful!", charge})
+    res.status(200).send({ message: "Payment sucessful!", charge });
   } catch (error) {
-    res.status(500).send({message:"Payment failed!", error})
+    res.status(500).send({ message: "Payment failed!", error });
   }
 });
 

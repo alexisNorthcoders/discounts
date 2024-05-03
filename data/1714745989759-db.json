@@ -1,0 +1,11 @@
+{
+  "users": {
+    "user": "Jony",
+    "email": "example@gmail.com",
+    "isSubscribed": true
+  },
+  "discounts": {
+    "KFC": "20%",
+    "adidas": "15%"
+  }
+}
