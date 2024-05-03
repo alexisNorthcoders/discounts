@@ -19,7 +19,7 @@ class DiscountDatabase {
     try {
       await fs.writeFile(
         this.discountsFilePath,
-        JSON.stringify( this.users, null, 2)
+        JSON.stringify(this.discounts, null, 2)
       );
       console.log("Discounts data saved successfully");
     } catch (error) {
@@ -39,12 +39,23 @@ class DiscountDatabase {
     }
     return false;
   }
-  async addDiscount(newBrand) {
-    const { cards, apps, discount,code } = newBrand;
+  async addDiscount(brand, cards=[], apps=[], discount, code="") {
     
-    this.discounts[newBrand] = newBrand
-    await this.saveUsers();
-    return true
+    if (this.discounts[brand]) {
+      console.log(
+        `Brand "${brand}" already exists in the database. Updating discount information.`
+      );
+    }
+
+    this.discounts[brand] = {
+      cards,
+      apps,
+      discount,
+      code
+    };
+
+    await this.saveDiscounts();
+    return true;
   }
   async getDiscountsByBrand(brand) {
     if (this.discounts.hasOwnProperty(brand)) {
@@ -59,6 +70,32 @@ class DiscountDatabase {
       return true;
     }
     return false;
+  }
+  async findBrandWithCard(cardName) {
+    const brandsWithCard = [];
+    for (const brand in this.discounts) {
+      if (this.discounts[brand].cards.includes(cardName)) {
+        brandsWithCard.push({
+          brand: brand,
+          discount: this.discounts[brand].discount,
+          code: this.discounts[brand].code,
+        });
+      }
+    }
+    return brandsWithCard;
+  }
+  async findBrandWithApp(appName) {
+    const brandsWithApp = [];
+    for (const brand in this.discounts) {
+      if (this.discounts[brand].apps.includes(appName)) {
+        brandsWithApp.push({
+          brand: brand,
+          discount: this.discounts[brand].discount,
+          code: this.discounts[brand].code,
+        });
+      }
+    }
+    return brandsWithApp;
   }
 }
 

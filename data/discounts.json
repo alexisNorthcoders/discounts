@@ -3,18 +3,30 @@
     "cards": ["chickenCard", "tastychicks"],
     "apps": ["clubApp", "TogetherApp"],
     "discount": 30,
-    "code":"XYZ-today"
+    "code": "XYZ-today"
   },
   "gucci": {
     "cards": ["walletsRich", "fashionCard"],
     "apps": ["clubApp", "SavingApp"],
     "discount": 20,
-    "code":"20-ALL"
+    "code": "20-ALL"
   },
   "adidas": {
     "cards": ["XLdiscounts", "shoes4life"],
     "apps": ["TogetherApp", "Shoozes"],
     "discount": 15,
-    "code":"FIFTEEN"
+    "code": "FIFTEEN"
+  },
+  "McDonalds": {
+    "cards": ["burgerCard", "tastychicks"],
+    "apps": ["clubApp", "SavingApp"],
+    "discount": 25,
+    "code": "MC-today"
+  },
+  "Reebok": {
+    "cards": ["shoezCard"],
+    "apps": ["runningApp"],
+    "discount": 16,
+    "code": ""
   }
 }

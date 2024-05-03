@@ -11,9 +11,7 @@ const UserDatabase = require("./UserDatabase.js");
 const DiscountDatabase = require("./DiscountsDatabase.js");
 const usersDB = new UserDatabase("./data/users.json");
 const discountDB = new DiscountDatabase("./data/discounts.json");
-const discounts = require("./data/discounts.json");
 const path = require("path");
-const { findBrandWithApp, findBrand, findBrandWithCard } = require("./queries.js");
 
 const app = express();
 app.use(cors());
@@ -101,12 +99,12 @@ app.post("/assistant", async (req, res) => {
   console.log(req.body);
 
   try {
-    const response = await assistantGeneratedQuery(userMessage);
-    const queryResult = eval(response)
-    const finalResponse = await generateResponseAfterQuery(queryResult)
-    console.log(queryResult)
-    console.log(finalResponse);
-    res.send({ message: finalResponse });
+    const response = await assistantModifyDiscounts(userMessage);
+    const queryResult = await eval(response)
+    
+    console.log(response)
+    
+    res.send({ message: queryResult });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing message");
@@ -122,6 +120,18 @@ app.post("/payment", async (req, res) => {
     res.status(200).send({ message: "Payment sucessful!", charge });
   } catch (error) {
     res.status(500).send({ message: "Payment failed!", error });
+  }
+});
+app.post("/discount", async (req, res) => {
+  
+  const { brand, cards, apps, discount, code } = req.body;
+  
+  const addDiscount = await discountDB.addDiscount(brand, cards, apps, discount, code);
+  if (addDiscount) {
+    res.send({ message: "Discount added successfully!",discount:addDiscount});
+  }
+  else{
+    res.status(400).send({message:"Bad request!"})
   }
 });
 app.listen(port, "0.0.0.0", () => {
@@ -156,13 +166,13 @@ async function assistantGeneratedQuery(userMessage) {
         {
           role: "system",
           content:
-            `I'm a database assistant. The user will ask me questions about a database. I have access to these functions: findBrandWithApp(discounts,appName),findBrandWithCard(discounts,cardName) Choose the appropriate function and only respond with the function and the corresponding argument. Not even backticks.
+            `I'm a database assistant. The user will ask me questions about a database. I have access to these methods: discountDB.findBrandWithApp(appName),discountDB.findBrandWithCard(cardName) Choose the appropriate function and only respond with the function and the corresponding argument. Not even backticks.
             Example 1:
             User: I have the card chickenCard.
-            Assistant: findBrandWithCard(discounts,"chickenCard")
+            Assistant: discountDB.findBrandWithCard("chickenCard")
             Example 2:
             User: I have the app clubApp.
-            Assistant: findBrandWithApp(discounts,"clubApp")
+            Assistant: discountDB.findBrandWithApp("clubApp")
           `,
         },
         { role: "user", content: userMessage },
@@ -185,6 +195,33 @@ async function generateResponseAfterQuery(queryResults) {
           content:
             `I'm a database assistant. This database stores the apps and cards you need to get discounts for each brand. My job is to give the results to the user in a natural way. These are the results of the query ${JSON.stringify(queryResults)}`,
         }
+      ],
+      max_tokens: 1000,
+    });
+    return completion.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("Error generating GPT-3 response:", error);
+    throw new Error("Error generating response");
+  }
+}
+async function assistantModifyDiscounts(userMessage) {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      messages: [
+        {
+          role: "system",
+          content:
+            `I'm a database assistant. The user will try to add discounts to the database. I have access to these methods: discountDB.addDiscount(brand, cards, apps, discount, code) Choose the appropriate method and only respond with the method and the corresponding argument. Not even backticks.
+            Example 1:
+            User: I want to add the following discount. Mcdonalds, card burgerSuper, app foodRewardz, discount 15%
+            Assistant: discountDB.addDiscount("Mcdonalds", ["burgerSuper"], ["foodRewardz"], 15)
+            Example 2:
+            User: I want to add the following discount. NIKE, runningCard, NikeApp, discount 22%, code NIKE25
+            Assistant: discountDB.addDiscount("Nike", ["runningCard"], ["NikeApp"], 22, "NIKE25");
+          `,
+        },
+        { role: "user", content: userMessage },
       ],
       max_tokens: 1000,
     });
