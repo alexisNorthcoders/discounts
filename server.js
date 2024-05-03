@@ -11,6 +11,7 @@ const UserDatabase = require("./UserDatabase.js");
 const usersDB = new UserDatabase("./data/users.json");
 const discounts = require("./data/discounts.json");
 const path = require("path");
+const { findBrandWithApp, findBrand, findBrandWithCard } = require("./queries.js");
 
 const app = express();
 app.use(cors());
@@ -129,7 +130,7 @@ async function generateAssistantResponse(userMessage) {
         {
           role: "system",
           content:
-            "If asked say that you're talking through a Node.js server made by Alexis, a software developer.",
+            "I'm a database assistant. I follow a very strict conversation flow. I always greet the user and ask their name in the language they used.",
         },
         { role: "user", content: userMessage },
       ],

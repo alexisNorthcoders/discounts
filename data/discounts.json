@@ -1,16 +1,17 @@
 {
-  "discounts": {
-    "KFC": {
-      "cards": ["chickenCard", "tastychicks"],
-      "discount": 15
-    },
-    "gucci": {
-      "cards": ["walletsRich", "fashionCard"],
-      "discount": 15
-    },
-    "adidas": {
-      "cards": ["XLdiscounts", "shoes4life"],
-      "discount": 15
-    }
+  "KFC": {
+    "cards": ["chickenCard", "tastychicks"],
+    "apps": ["clubApp", "TogetherApp"],
+    "discount": 30
+  },
+  "gucci": {
+    "cards": ["walletsRich", "fashionCard"],
+    "apps": ["clubApp", "SavingApp"],
+    "discount": 20
+  },
+  "adidas": {
+    "cards": ["XLdiscounts", "shoes4life"],
+    "apps": ["TogetherApp", "Shoozes"],
+    "discount": 15
   }
 }
