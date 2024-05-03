@@ -1,0 +1,1 @@
+This is a project for an AI assistant that will guide free/subscribed users to retrieve discounts from a database.
