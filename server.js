@@ -6,16 +6,15 @@ require("dotenv").config();
 const { OpenAI } = require("openai");
 const stripe = require("stripe")(process.env.STRIPE);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const cors = require('cors')
-
-
+const cors = require("cors");
+const UserDatabase = require("./UserDatabase.js");
+const usersDB = new UserDatabase("./data/users.json");
+const discounts = require("./data/discounts.json")
 const path = require("path");
 
 const app = express();
-app.use(cors())
+app.use(cors());
 const port = process.env.PORT;
-
-const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,15 +27,15 @@ const storage = multer.diskStorage({
   },
 });
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/json') {
-    console.log("json accepted")
+  if (file.mimetype === "application/json") {
+    console.log("json accepted");
     cb(null, true);
   } else {
-    console.log("json not accepted")
-    cb(new Error('Only JSON files are allowed'), false);
+    console.log("json not accepted");
+    cb(new Error("Only JSON files are allowed"), false);
   }
 };
-const upload = multer({ storage,fileFilter});
+const upload = multer({ storage, fileFilter });
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -60,15 +59,22 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
-
+app.get("/users", (req, res) => {
+  const usersData = usersDB.getUsers();
+  res.json(usersData);
+});
+app.get("/discounts", (req, res) => {
+  
+  res.json(discounts);
+});
 app.post("/assistant", async (req, res) => {
   const userMessage = req.body.userPrompt;
-  console.log(req.body)
+  console.log(req.body);
 
   try {
     const response = await generateAssistantResponse(userMessage);
-    console.log(response)
-    res.send({message:response});
+    console.log(response);
+    res.send({ message: response });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing message");
@@ -77,7 +83,7 @@ app.post("/assistant", async (req, res) => {
 
 app.post("/payment", async (req, res) => {
   const { amount, currency, source } = req.body;
-  console.log(req.body)
+  console.log(req.body);
 
   try {
     const charge = await stripe.charges.create({ amount, currency, source });
