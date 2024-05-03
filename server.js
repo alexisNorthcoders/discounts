@@ -27,7 +27,16 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${basename}${ext}`);
   },
 });
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/json') {
+    console.log("json accepted")
+    cb(null, true);
+  } else {
+    console.log("json not accepted")
+    cb(new Error('Only JSON files are allowed'), false);
+  }
+};
+const upload = multer({ storage,fileFilter});
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -40,7 +49,14 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    req.session.filePath = req.file.path;
+    res.status(200).send({ message: "File uploaded successfully." });
+  } catch (error) {
+    res.status(500).send({ message: "Failed uploading the file.", error });
+  }
+});
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
@@ -57,14 +73,7 @@ app.post("/assistant", async (req, res) => {
     res.status(500).send("Error processing message");
   }
 });
-app.post("/upload", upload.single("file"), async (req, res) => {
-  try {
-    req.session.filePath = req.file.path;
-    res.status(200).send({ message: "File uploaded successfully." });
-  } catch (error) {
-    res.status(500).send({ message: "Failed uploading the file.", error });
-  }
-});
+
 app.post("/payment", async (req, res) => {
   const { amount, currency, source } = req.body;
 
