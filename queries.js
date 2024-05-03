@@ -4,7 +4,8 @@ function findBrandWithCard(db,cardName) {
       if (db[brand].cards.includes(cardName)) {
         brandsWithCard.push({
           brand: brand,
-          discount: db[brand].discount
+          discount: db[brand].discount,
+          code:db[brand].code
         });
       }
     }
@@ -16,7 +17,8 @@ function findBrandWithCard(db,cardName) {
       if (db[brand].apps.includes(appName)) {
         brandsWithCard.push({
           brand: brand,
-          discount: db[brand].discount
+          discount: db[brand].discount,
+          code:db[brand].code
         });
       }
     }

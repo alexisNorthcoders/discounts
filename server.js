@@ -99,9 +99,12 @@ app.post("/assistant", async (req, res) => {
   console.log(req.body);
 
   try {
-    const response = await generateAssistantResponse(userMessage);
-    console.log(response);
-    res.send({ message: response });
+    const response = await assistantGeneratedQuery(userMessage);
+    const queryResult = eval(response)
+    const finalResponse = await generateResponseAfterQuery(queryResult)
+    console.log(queryResult)
+    console.log(finalResponse);
+    res.send({ message: finalResponse });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing message");
@@ -133,6 +136,53 @@ async function generateAssistantResponse(userMessage) {
             "I'm a database assistant. I follow a very strict conversation flow. I always greet the user and ask their name in the language they used.",
         },
         { role: "user", content: userMessage },
+      ],
+      max_tokens: 1000,
+    });
+    return completion.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("Error generating GPT-3 response:", error);
+    throw new Error("Error generating response");
+  }
+}
+
+async function assistantGeneratedQuery(userMessage) {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      messages: [
+        {
+          role: "system",
+          content:
+            `I'm a database assistant. The user will ask me questions about a database. I have access to these functions: findBrandWithApp(discounts,appName),findBrandWithCard(discounts,cardName) Choose the appropriate function and only respond with the function and the corresponding argument. Not even backticks.
+            Example 1:
+            User: I have the card chickenCard.
+            Assistant: findBrandWithCard(discounts,"chickenCard")
+            Example 2:
+            User: I have the app clubApp.
+            Assistant: findBrandWithApp(discounts,"clubApp")
+          `,
+        },
+        { role: "user", content: userMessage },
+      ],
+      max_tokens: 1000,
+    });
+    return completion.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("Error generating GPT-3 response:", error);
+    throw new Error("Error generating response");
+  }
+}
+async function generateResponseAfterQuery(queryResults) {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      messages: [
+        {
+          role: "system",
+          content:
+            `I'm a database assistant. This database stores the apps and cards you need to get discounts for each brand. My job is to give the results to the user in a natural way. These are the results of the query ${JSON.stringify(queryResults)}`,
+        }
       ],
       max_tokens: 1000,
     });
