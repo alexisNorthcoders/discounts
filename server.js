@@ -102,12 +102,15 @@ app.post("/assistant", async (req, res) => {
   console.log(req.body);
 
   try {
-    const response = await assistantModifyDiscounts(userMessage);
+    /* const response = await assistantModifyDiscounts(userMessage);
+    const queryResult = await eval(response); */
+    const response = await assistantGeneratedQuery(userMessage);
     const queryResult = await eval(response);
+    const finalResponse = await generateResponseAfterQuery(queryResult)
 
-    console.log(response);
+    
 
-    res.send({ message: queryResult });
+    res.send({ message: finalResponse });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Error processing message");
