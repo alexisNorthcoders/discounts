@@ -1,32 +1,70 @@
 {
   "KFC": {
-    "cards": ["chickenCard", "tastychicks"],
-    "apps": ["clubApp", "TogetherApp"],
+    "cards": [
+      "chickenCard",
+      "tastychicks"
+    ],
+    "apps": [
+      "clubApp",
+      "TogetherApp"
+    ],
     "discount": 30,
     "code": "XYZ-today"
   },
   "gucci": {
-    "cards": ["walletsRich", "fashionCard"],
-    "apps": ["clubApp", "SavingApp"],
+    "cards": [
+      "walletsRich",
+      "fashionCard"
+    ],
+    "apps": [
+      "clubApp",
+      "SavingApp"
+    ],
     "discount": 20,
     "code": "20-ALL"
   },
   "adidas": {
-    "cards": ["XLdiscounts", "shoes4life"],
-    "apps": ["TogetherApp", "Shoozes"],
+    "cards": [
+      "XLdiscounts",
+      "shoes4life"
+    ],
+    "apps": [
+      "TogetherApp",
+      "Shoozes"
+    ],
     "discount": 15,
     "code": "FIFTEEN"
   },
   "McDonalds": {
-    "cards": ["burgerCard", "tastychicks"],
-    "apps": ["clubApp", "SavingApp"],
+    "cards": [
+      "burgerCard",
+      "tastychicks"
+    ],
+    "apps": [
+      "clubApp",
+      "SavingApp"
+    ],
     "discount": 25,
     "code": "MC-today"
   },
   "Reebok": {
-    "cards": ["shoezCard"],
-    "apps": ["runningApp"],
+    "cards": [
+      "shoezCard"
+    ],
+    "apps": [
+      "runningApp"
+    ],
     "discount": 16,
     "code": ""
+  },
+  "Nike": {
+    "cards": [
+      "FashionCard"
+    ],
+    "apps": [
+      "discountsApp"
+    ],
+    "discount": 18,
+    "code": "NIKEVER"
   }
 }
