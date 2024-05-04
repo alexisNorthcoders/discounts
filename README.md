@@ -12,10 +12,10 @@ Features:
 User flow:
 - User logs in or signs up
 - User is greeted by assistant
-- User makes asks assistant about discounts
+- User asks the assistant about discounts
 - Assistant responds with relevant discounts
-- User can pay for the service
-- User can add discounts
+- User can pay/donate for the service
+- User can ask the assistant to add a discount
 
 Admin:
 - Add discounts
