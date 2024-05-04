@@ -54,6 +54,10 @@ class UserDatabase {
     }
     return null;
   }
+  getUserByUsername(username) {
+    
+    return Object.values(this.users).find(user => user.username === username);
+}
   async deleteUserById(id) {
     if (this.users.hasOwnProperty(id)) {
       delete this.users[id];

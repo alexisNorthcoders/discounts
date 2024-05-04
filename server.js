@@ -13,6 +13,7 @@ const usersDB = new UserDatabase("./data/users.json");
 const discountDB = new DiscountDatabase("./data/discounts.json");
 const path = require("path");
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt");
 const validateToken = require("./middleware/tokenvalidator.js")
 
 
@@ -139,6 +140,21 @@ app.post("/discount", async (req, res) => {
     res.status(400).send({message:"Bad request!"})
   }
 });
+app.post("/login",async (req,res)=>{
+  const {username,password} = req.body
+  if (!username || !password){
+      res.status(400).send({message:"Missing email or password."})
+      }
+    const user = usersDB.getUserByUsername(username)
+    const isPasswordCorrect = await bcrypt.compare(password,user.password)
+    if (!isPasswordCorrect){
+      res.status(200).send({message:"Wrong Password!"})
+    }
+    else{
+
+      res.status(200).send({message:"Login sucessful!"})
+    }
+})
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
