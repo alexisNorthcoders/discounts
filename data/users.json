@@ -11,6 +11,13 @@
       "username": "Grace",
       "isSubscribed": false,
       "avatarURL": "assets/avatar2.jpeg"
+    },
+    "1714842552734": {
+      "id": "1714842552734",
+      "username": "Grace",
+      "isSubscribed": false,
+      "avatarURL": "assets/avatar2.jpeg",
+      "password": "$2b$10$gkJhwD8hPIBL543K3BYQ0O/XYbCQBm.atDwnAfM5tyGrSHFM1jOya"
     }
   }
 }

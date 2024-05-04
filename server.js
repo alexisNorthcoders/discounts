@@ -12,6 +12,9 @@ const DiscountDatabase = require("./DiscountsDatabase.js");
 const usersDB = new UserDatabase("./data/users.json");
 const discountDB = new DiscountDatabase("./data/discounts.json");
 const path = require("path");
+const jwt = require("jsonwebtoken")
+const validateToken = require("./middleware/tokenvalidator.js")
+
 
 const app = express();
 app.use(cors());
@@ -66,6 +69,7 @@ app.get("/users", async (req, res) => {
 });
 app.post("/users", async (req, res) => {
   const newUser = req.body;
+  console.log(newUser + " in server apppost")
   
   const addUser = await usersDB.addUser(newUser);
   if (addUser) {
@@ -91,8 +95,9 @@ app.delete("/users", async (req, res) => {
     res.status(400).send({message:"Bad request!"})
   }
 });
-app.get("/discounts", (req, res) => {
-  res.json(discounts);
+app.get("/discounts", async (req, res) => {
+  const discountData = await discountDB.getDiscounts()
+  res.send(discountData)
 });
 app.post("/assistant", async (req, res) => {
   const userMessage = req.body.userPrompt;

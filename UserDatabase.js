@@ -1,4 +1,5 @@
 const fs = require("fs").promises;
+const bcrypt = require("bcrypt");
 
 class UserDatabase {
   constructor(usersFilePath) {
@@ -40,11 +41,12 @@ class UserDatabase {
     return false;
   }
   async addUser(newUser) {
-    const { username, avatarURL, isSubscribed } = newUser;
-    const user = new User(username, isSubscribed, avatarURL);
+    const { username, avatarURL, isSubscribed, password } = newUser;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User(username, isSubscribed, avatarURL, hashedPassword);
     this.users[user.id] = user.info;
     await this.saveUsers();
-    return {user:user.info}
+    return { user: user.info };
   }
   async getUserById(id) {
     if (this.users.hasOwnProperty(id)) {
@@ -62,17 +64,19 @@ class UserDatabase {
   }
 }
 class User {
-  constructor(username, isSubscribed = false, avatarURL = "") {
+  constructor(username, isSubscribed = false, avatarURL = "", password) {
     const randomId = Date.now().toString();
     this.id = randomId;
     this.username = username;
     this.isSubscribed = isSubscribed;
     this.avatarURL = avatarURL;
+    this.password = password;
     this.info = {
       id: this.id,
       username: this.username,
       isSubscribed: this.isSubscribed,
       avatarURL: this.avatarURL,
+      password: this.password,
     };
   }
 }
