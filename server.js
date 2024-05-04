@@ -142,17 +142,29 @@ app.post("/discount", async (req, res) => {
 });
 app.post("/login",async (req,res)=>{
   const {username,password} = req.body
-  if (!username || !password){
+  if (!username || !password ){
       res.status(400).send({message:"Missing email or password."})
+      return
+      }
+      if (typeof password !== "string"){
+        res.status(400).send({message:"Wrong password format."})
+        return
       }
     const user = usersDB.getUserByUsername(username)
     const isPasswordCorrect = await bcrypt.compare(password,user.password)
     if (!isPasswordCorrect){
       res.status(200).send({message:"Wrong Password!"})
-    }
+      }
     else{
+      const accessToken = jwt.sign({
+        user: {
+            username,
+            id: user.id
+        }
+    }, process.env.ACCESS_TOKEN_SECRET,
+    {expiresIn: "15m"})
 
-      res.status(200).send({message:"Login sucessful!"})
+      res.status(200).send({message:"Login sucessful!",accessToken})
     }
 })
 app.listen(port, "0.0.0.0", () => {
