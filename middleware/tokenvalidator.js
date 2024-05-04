@@ -15,8 +15,8 @@ const validateToken = (req, res, next) => {
                 next();
             });
         } else {
-            res.status(401);
-            throw new Error("User is not authorized or token is missing");
+            res.status(401).send({message:"User is not authorized or token is missing"});
+            return
         }
     } catch (error) {
         next(error);
